@@ -5,7 +5,7 @@
 
 void ligar(int matrizadj[50][50],int cidade1,int cidade2);
 void desligar(int matrizadj[50][50],int cidade1,int cidade2);
-int tem_caminho(int a,int b,int qtdestradas,int matrizadj[50][50]);
+int tem_caminho(int a,int b,int qtdestradas,int matrizadj[50][50],int contador,int *vetor);
 int adjacente(int a,int b,int matrizadj[50][50]);
 
 
@@ -17,6 +17,7 @@ int main()
     int cidade1 = 1,cidade2;
     int qtdestradas;
     int a,b;
+    int vetor[n];
     //Digitar o caminho que deseja procurar, no caso de a ate b.
     printf("Digite o destino [a-b]:  ");
     scanf("%d %d",&a,&b);
@@ -42,13 +43,15 @@ int main()
         ligar(matrizadj,cidade1,cidade2);
     
     }
-    if(tem_caminho(a,b,qtdestradas,matrizadj)){
+
+    if(tem_caminho(a,b,qtdestradas,matrizadj,contador,vetor)){
+        //Vai produzir o caminho e falar se tem caminho com determinado tamanho de estradas
+        printf("\n");
         printf("Tem caminho com %d estradas",qtdestradas);
     }
     else{
         printf("Não tem caminho com %d estradas",qtdestradas);
     }
-
 }
 
 void ligar(int matrizadj[50][50],int cidade1,int cidade2){
@@ -66,11 +69,16 @@ int adjacente(int a,int b,int matrizadj[50][50]){
     return 0;
 }
 
-int tem_caminho(int a,int b,int qtdestradas,int matrizadj[50][50]){
+int tem_caminho(int a,int b,int qtdestradas,int matrizadj[50][50],int contador,int *vetor){
     int c;
+    vetor[contador] = a;
+    printf("%d\n",vetor[contador]);
+
     //Se a quantidade de estradas que voce deseja do caminho que voce deseja achar for 1, voce faz so uma verificacao e verifica se
     // pra chegar em tal destino, existe apenas uma estrada,vendo se esses pontos são adjacentes.
     if(qtdestradas == 1){
+        vetor[contador] = b;
+        printf("%d\n",vetor[contador]);
         return adjacente(a,b,matrizadj);
     }
     //Se nao, vc verifica se existe um caminho da cidade 1 para outra cidade de forma que leve ao seu destino, lembrando que tem que cumprir
@@ -78,10 +86,13 @@ int tem_caminho(int a,int b,int qtdestradas,int matrizadj[50][50]){
     else{
     //Verifica se existe um caminho de a ate c, se tiver, chama a função tem_caminho de novo, so que com qtdestradas-1 e verifica se tem de c ate b.
         for(c = 0;c<50;c++){
-            if(adjacente(a,c,matrizadj) == 1 && tem_caminho(c,b,qtdestradas-1,matrizadj) == 1){
+            if(adjacente(a,c,matrizadj) == 1 && tem_caminho(c,b,qtdestradas-1,matrizadj,contador,vetor) == 1){
+                contador++;
                 return 1;
             }
         }
+
+
         return 0;
     }
 }
